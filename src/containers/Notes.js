@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { API, Storage } from "aws-amplify";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { CirclePicker } from 'react-color';
 import LoaderButton from "../components/LoaderButton";
 import config from "../config";
 import "./Notes.css";
@@ -12,6 +13,7 @@ export default function Notes(props) {
     const [content, setContent] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [color, setColor] = useState(null);
 
   useEffect(() => {
     function loadNote() {
@@ -21,13 +23,14 @@ export default function Notes(props) {
     async function onLoad() {
       try {
         const note = await loadNote();
-        const { content, attachment } = note;
+        const { content, attachment, color} = note;
 
         if (attachment) {
           note.attachmentURL = await Storage.vault.get(attachment);
         }
 
         setContent(content);
+        setColor(color);
         setNote(note);
       } catch (e) {
         alert(e);
@@ -77,7 +80,9 @@ export default function Notes(props) {
   
       await saveNote({
         content,
-        attachment: attachment || note.attachment
+        color,
+        attachment: attachment || note.attachment,
+        
       });
       props.history.push("/");
     } catch (e) {
@@ -140,6 +145,10 @@ export default function Notes(props) {
             {!note.attachment && <ControlLabel>Attachment</ControlLabel>}
             <FormControl onChange={handleFileChange} type="file" />
           </FormGroup>
+          <b>Choose a color for your note: </b>
+          <CirclePicker 
+          onChange={e=>setColor(e.hex)}/>
+          <br/>
           <LoaderButton
             block
             type="submit"

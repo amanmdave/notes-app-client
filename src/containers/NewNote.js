@@ -1,5 +1,7 @@
 import React, { useRef, useState } from "react";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { FormGroup, FormControl, ControlLabel, Button } from "react-bootstrap";
+import { CirclePicker } from 'react-color';
+
 import LoaderButton from "../components/LoaderButton";
 import config from "../config";
 import "./NewNote.css";
@@ -10,6 +12,7 @@ export default function NewNote(props) {
   const file = useRef(null);
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [color, setColor] = useState("#ffffff");
 
   function validateForm() {
     return content.length > 0;
@@ -37,7 +40,7 @@ export default function NewNote(props) {
         ? await s3Upload(file.current)
         : null;
   
-      await createNote({ content, attachment });
+      await createNote({ content, attachment, color });
       props.history.push("/");
     } catch (e) {
       alert(e);
@@ -63,8 +66,12 @@ export default function NewNote(props) {
         </FormGroup>
         <FormGroup controlId="file">
           <ControlLabel>Attachment</ControlLabel>
-          <FormControl onChange={handleFileChange} type="file" />
+          <FormControl onChange={handleFileChange} type="file" placeholder="" />
         </FormGroup>
+        <b>Choose a color for your note: </b>
+        <CirclePicker 
+        onChange={e=>setColor(e.hex)}/>
+        <br/>
         <LoaderButton
           block
           type="submit"

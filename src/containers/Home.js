@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { PageHeader, ListGroup, ListGroupItem } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import "./Home.css";
 import { API } from "aws-amplify";
 import { Link } from "react-router-dom";
+
+import "./Home.css";
+import Footer from "../components/Footer";
 
 export default function Home(props) {
   const [notes, setNotes] = useState([]);
@@ -29,15 +31,19 @@ export default function Home(props) {
   }, [props.isAuthenticated]);
   
   function loadNotes() {
+
     return API.get("notes", "/notes");
   }
 
   function renderNotesList(notes) {
     return [{}].concat(notes).map((note, i) =>
       i !== 0 ? (
-        <LinkContainer key={note.noteId} to={`/notes/${note.noteId}`}>
+        <LinkContainer key={note.noteId} to={`/notes/${note.noteId}`}  style={{backgroundColor: note.color}}>
           <ListGroupItem header={note.content.trim().split("\n")[0]}>
             {"Created: " + new Date(note.createdAt).toLocaleString()}
+            {
+            console.log(note)
+            }
           </ListGroupItem>
         </LinkContainer>
       ) : (
@@ -82,6 +88,7 @@ export default function Home(props) {
   return (
     <div className="Home">
       {props.isAuthenticated ? renderNotes() : renderLander()}
+      <Footer/>
     </div>
   );
 }
