@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "aws-amplify": "^1.2.4",
+    "aws-amplify": "^6.15.6",
     "react": "^16.11.0",
     "react-bootstrap": "^0.33.0",
     "react-color": "^2.17.3",
